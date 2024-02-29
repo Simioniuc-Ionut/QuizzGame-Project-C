@@ -1,0 +1,142 @@
+title Quizz
+
+
+participantgroup #grey **Clients**
+participant Client n
+participant Client 3
+participant Client 2
+participant Client 1
+end
+
+participantgroup #orange **Server-Aplication **
+participant Threat n
+participant Threat 2
+participant Threat 1
+participant Server
+database #blue:1 Database #red
+end
+
+
+
+box over Client n,Client 1:Socket Area
+box over Client n,Client 1:Connect Area
+box over Server:Socket()
+box over Server:Bind()
+box over Server:Listen()
+
+activate Database
+box over Database:Quizz
+
+box over Client n,Client 1 #lightblue:Answer/Output
+space 10
+
+
+loop #darkgreen Work place
+box over Server:Accept()
+box right of Server:     StartQuizz()\nChange Start from false -> true
+
+opt #lightblue [Start=true]
+end
+  opt #lightblue Start=false
+  
+  space -39
+  Client 1 ->(40)Server:Connection
+  space -42
+  Client 2->(40)Server:Connection
+   space -43
+  Client 3-#red>(31)Server:Connection
+  space -37
+  Client n ->(40)Server:Connection
+  space 
+
+abox over Server #lightgreen:threatCreate
+activate Server #lightgreen
+
+  Client 1<#purple-Threat 1:Question
+  activate Client 1 #blue
+  
+  activate Threat 1#00ff00
+      
+      activate Server #yellow
+  
+  Threat 1<#00ff00:2-Server:*treat()
+  Threat 1->Database:Request
+  activate Threat 1
+  Threat 1->Threat 1:nrQuestions!=0
+  Threat 1<#purple-Database:Question
+  deactivate Threat 1
+  
+  box left of Client 1: I/O 
+  Threat 1-#Yellow>Server:Scor
+  Client 1--#lightblue>Threat 1:Answer
+  
+  deactivate Client 1
+  
+  //destroysilent Client 1
+  deactivate Threat 1
+  destroysilent Threat 1
+
+
+  Client 2<#purple-Threat 2:Question
+  activate Client 2 #blue
+  
+  activate Threat 2 #00ff00
+  Threat 2<#00ff00:2-Server:*treat()
+  Threat 2->Database:Request
+  activate Threat 2
+  Threat 2->Threat 2:nrQuestions!=0
+  Threat 2<#purple-Database:Questions
+  deactivateafter Threat 2
+  
+  box left of Client 2: I/O
+    Threat 2-#yellow>Server:Scor
+  Client 2--#lightblue>Threat 2:Answer
+  
+  deactivate Client 2 
+    
+  //destroysilent Client 2
+  deactivate Threat 2
+  destroysilent Threat 2
+ 
+   Client n<#purple-Threat n:Question
+   activate Client n #blue
+   
+   activate Threat n #00ff00
+   Threat n<#00ff00:2-Server:*treat()
+   Threat n->Database:Request
+   activate Threat n
+   Threat n->Threat n:nrQuestions!=0
+   Threat n<#purple-Database:Question
+   deactivate Threat n
+   
+  
+   box left of Client n: I/O
+     Threat n-#yellow>Server:Scor
+   Client n--#lightblue>Threat n:Answer
+   
+   deactivate Client n
+   
+   
+   
+   //destroysilent Client n
+   deactivate Threat n
+   destroysilent Threat n
+   deactivate Server
+ 
+ end
+ Client 3 <#red- Server:Wait to finish Quizz
+ destroysilent Client 3
+space 
+Client 1<#yellow-Server:Scor
+Client 2<#yellow-Server:Scor
+Client n<#yellow-Server:Scor
+  
+  destroysilent Client 1
+  destroysilent Client 2
+  destroysilent Client n
+   
+box over Client n,Client 1 #yellow:LeaderBoard 
+end
+
+deactivate Database
+

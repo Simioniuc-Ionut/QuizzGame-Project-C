@@ -1,0 +1,6 @@
+sqlite3 quiz_game.db
+.mode column
+.headers on
+SELECT * FROM Quiz;
+
+INSERT INTO QUIZ (id,question, option_a, option_b, option_c, option_d, correct_option) VALUES (3,'Cate credite are materia BD?', '4', '5', '6', '3', 'C');

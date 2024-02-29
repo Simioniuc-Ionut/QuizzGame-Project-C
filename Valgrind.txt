@@ -1,0 +1,8 @@
+ valgrind --leak-check=full --track-origins=yes -s ./QuizzClient 127.0.0.1 2001
+
+ valgrind --leak-check=full --track-origins=yes -s ./QuizzServer
+
+valgrind --tool=helgrind ./QuizzServer
+
+
+

@@ -1,0 +1,106 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\begin{document}
+
+\title{Quizz Game}
+\titlerunning{Quizz Game: Joc Interactiv}
+
+\author{Autorul : Simioniuc Ionut}
+
+\institute{Instituția: Faculty of Computer Science ,Iasi,Romania\and
+\email{Email : simioniucionut1@gmail.com}}
+
+\maketitle
+
+\begin{abstract}
+Quizz Game este un proiect care implementează un server multithreading care coordonează în mod sincronizat și concurent accesul mai multor clienți la server. Acest document prezintă detaliile de implementare și structura proiectului, inclusiv aspecte legate de gestionarea clienților,baze de date și sincronizarea clienților.\keywords{ Multithreading \and Socket \and SQLLite \and Mutex \and TCP .}
+\end{abstract}
+
+\section{Introducere}
+
+\hspace{1cm} 
+Viziunea generală: Scopul proiectului este de a implementa un server care să permită conectarea a n clienți într-un mod sigur, rapid și sincronizat. După apelarea funcției “START”, nu se vor mai putea conecta alți clienți la Quizz-ul respectiv. Întrebările vor fi preluate din baza de date SQLite si trimise de către server în mod concurat către toți clienții, aceștia având un timp de n secunde să răspundă pentru fiecare întrebare.Daca nu exista o baza de date,serverul va crea una standard.La finalul jocului se va prezenta un LeaderBoard cu câștigătorii Jocului.
+
+\hspace{1cm}Obiectivele proiectului: \\
+    -Conectarea a n clienți la server, într-un mod sigur și eficient.\\
+    -Crearea unui server multithreading concurent.\\
+    -Implementarea tabelei de întrebări prin baza de date SQLite.\\
+    -Trimiterea unui LeaderBoard catre client care sa includa mai multe detalii despre\\ fiecar jucator inregistrat.\\
+    -Crearea unui cronometru grafic in client.\\
+    -Serverul va fi capabil sa ruleze iar sesiunea de Quizz.\\
+\section{Tehnologii Aplicate}
+Pentru implementarea proiectului, se folosește tehnologia de comunicare TCP, deoarece aceasta este mai sigură, păstrează integritatea datelor și consistența acestora, trimiterea datelor către client fiind sigură și sincronizată.\\
+O altă tehnologie folosită este baza de date SQLite care stochează întrebările și variantele de răspuns ale jocului. \\
+Folosirea bazei de date SQLite îmi oferă o performanță și o siguranță mult mai bună.
+\section{Structura Aplicației}
+\hspace{1cm}Concepte folosite: \\
+    -TCP: Realizarea unui server si a mai multor clienti prin care se comunica.\\
+    -Socket: Serverul va avea un socket pentru a realiza conexiunea si comunicarea cu alti clienți.\\
+    -SQLite: O baza de date pentru stocarea intrebarilor si a raspunsurilor.\\ 
+    -MultiThreading: Utilizarea thread-urilor pentru a gestiona conexiunile multiple în mod concurent.\\
+    -Mutexuri: Utilizarea mutex-urilor pentru a sincroniza accesul la resurse partajate între thread-uri si pentru a evita Race Conditions.\\
+\hspace{0.5cm}
+
+A se accesa diagrama aplicației la linkul indicat : \href{https://sequencediagram.org/index.html?presentationMode=readOnly#initialData=C4S2BsFMAIEUFcQC8kCh0AcCGAnUBjEbAO2AHMcB7eDaAYgsgE9oAqVgYXBElIGd2qbHhCESwaFx6loxIbgJEsMqbwkBmeSLHKJqmQCYti8ZO5roARlS8AJpgWilpCtVp1KOZWRjsAypA4AG6BALQAghjc+FiglMRsrMZOpgAqABY4kLGyyToyGVk5RsImutCF2RLWpSnlAcGBqLaxWABGWHwwdG3g8JAAXJbQACKtHV30WfZ26OhtlAAe0JQhOGbSEsQANPrVA36U+ADWkBLhRagLy6uBGxY7e1YDHPHEkPjnl9cra9ANawOR1OwAAFABKK5LX53AGBAYAIRAxFsEKhNz+cJwAwAMiA+MBeGjUFhPiAgrEYGNgO1OpB0TD1tTaV0BghkGgGbd1k9HuYZMM6NwyOlgL1+gNwsQ+AB3QIAegA8vBgBgVag+Nh8DBLAAGObgSiUdwtHDHRi8aAAdU8x2gUVJ9J+3P+gUB4Xw2owYMhPxwIBFEkoADNXY1sdBI5G-DS8OyUBCADrEDjpbwwGMKaDBqgAW2zWHAk1CAD5oMAcP10MaJEKA6LxTAANqZvAAXgr-QAujYUahIzX6MKG30M7HgG3g4Wuv3oLPNY7oKF1ABOWdPYal0EAFl14KxLzeHzickjC+1S+3RkjTwMW93+7d8NexHeZPis+g55goW3mhv-IaKEdDTCWoLqJYj7hoer7HiAH5nlqP7qAA7OugGyEuYEPgeL5vie85IXOJLOpiT7rHWgYWsQAzAJkVQcEUhIkmSFKEmGfyUaK1HoABmxWAAPHQao4FEkChJUOSWGy-QEvBp7QKSoBsTAG70I2s6zkp5KUhU9FSXQuq6sGwZGZ+UbmZG2kqRxdx0EwkDgIaMqaZGknVEJRkmUZAx3gerAVlUaJufp1SlsyEyDAASpAACOsnAFprG6e5VizqllilhlAzEDgCCQHJ8R8AAhG2+ohUxgnCfAolQKEEV0jJBUEZGtjZMl7EZa50A-FAwZBqGG4DNAACSSpzhVVRWMBACajnOSWB5+PgnjofxmXAcOYqjiW2VSrKTSRrObXWbpG7dfK8ptQSVBMHwIBQCoGHWK17XKSloVpa9N2UHdD0WF1vH3IYQkiWJEmfQYTWFQpp3sbe6mjt1cMwKlBj0F5pnlXplUGJ5xlY75oT+YFsTBTjU13iWDWsjF8XNUl72dZD6WQ1lkM5XlCXySVZWs7joM1eDNODPlMN8Mdb06YSWD9XcaPdb1kD9Ssg0YVDo1KuZaPAQ5TmUDKi3kQcK04GtFh3pt9bbf0u0c-tcpm0dr0o8DEjo+Zs6XddFa-fdj16Orkuuwr32+39AcU8U-afrygu1eJqU0WLLVWR1qkYQkPRIxZUYh59WeY2ZUZJ-j3m6kTJNMeTUdbOF4yNXTCWfvnlUKbXsjs23nMpzzpXYx3xDx8LDesr3CEu+ng+ft1PXQn1A1u7Iw1jYqllJ7r80G0b0HLatUa8qEVuBo2dvdw7h3O5PTMZ-x7cz7nkbe81t3+xYvKfidU9J5-L9+-9BQC6-1dliGO0BZhL3UNAIS0xQi2WxFaLAYByyUGzMifE6Q4CIBQP2H2r8AGB34pob8c4NxCT1s5Ymxs95m1vOQreMoqG71NqgOO9kGFMMBDQ7qeD-6R3OmHfB-Cg6CL4e-TOM9SJ3F5LsZ69AKEG1xNkNqOAESUFwLYOcsxmhSxsiLVAQA}{Diagrama}
+
+\section{Aspecte de Implementare}
+\hspace{1cm}Protocolul la nivel de aplicație: Când se vor conecta clienții la server, 
+se vor crea threaduri pentru fiecare client, apoi clientii se vor înregistra, urmând să aștepte un semnal de start trimis de către server.Semnalul de start va fi creat de un alt thread.După începere, serverul trimite in mod concurent întrebări ,sub forma unor structuri specifice, către toți clienții; Clientii trimit răspunsurile înapoi către server intr un timp de n secunde, urmând ca serverul să trimită următoarea întrebare. La final, serverul trimite către toți clienții Leaderboard-ul cu scorurile obținute de către toți participantii ,putand apoi sa ruleze alta sesiune de Quizz.\\
+\hspace{1cm}Scenarii de utilizare:\\
+
+\hspace{0.5cm}I Un scenariu de utilizare ar fi la facultate, atunci când la finalul cursului profesorul dorește să vadă cât de bine au înțeles studenții cursul. Astfel, profesorul verifică înțelegerea fiecărui student prin intermediul unui quiz, punând studenții să răspundă la un set de întrebări referitoare la cursul respectiv. Profesorul va putea, la final, să vadă, prin punctajul obținut, cât de bine s-a înțeles cursul respectiv.\\
+
+\hspace{0.5cm}II Un alt scenariu ar fi la evaluarea unui test. Studenții pot vedea punctajul doar la final, după ce toți ceilalți colegi au terminat de completat quiz-ul. Datorită timpului de n secunde per întrebare, studenții nu vor putea frauda examenul, deoarece, dacă aceștia nu răspund la timp la o întrebare, vor primi 0 puncte pentru întrebarea respectivă.\\
+\hspace{1cm}Sectiuni de cod Specifice:\\
+
+\hspace{0.5cm} Poza cu implementarea tabelului de întrebări. :\\
+
+\hspace{0.5cm} Implementarea secțiunii de START: \\
+În Fig.1 $\rightarrow$ zona de creare a thread-urilor și de acceptare a conexiunilor atunci când
+Quizz-ul nu a început.\\
+În Fig.2 $\rightarrow$ un mecanism prin care Serverul respinge toți ceilalți clienți care încearcă să se conecteze după începerea jocului Quizz.\\
+În Fig.3 $\rightarrow$ funcția care citește din terminal-ul serverului comanda pentru începere. Se folosesc lacăte pentru a evita scenariul când un thread se creează în momentul în care deja am dat Start, astfel ca acel thread să nu se mai creeze, folosesc mutex.\\
+
+
+\begin{minipage}{0.9\linewidth}
+    \includegraphics[width=\linewidth]{Fig1main.png}
+    \captionof{figure}{main()}
+    \label{fig:main}
+\end{minipage}
+
+\begin{minipage}{0.6\linewidth}
+    \includegraphics[width=\linewidth]{Fig2Thread.png}
+     \captionof{figure}{threadCreate()}
+    \label{fig:thread}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+    \includegraphics[width=\linewidth]{StartFun().png}
+    \captionof{figure}{startFunction()}
+    \label{fig:startFunction}
+\end{minipage}
+
+
+\section{Concluzii}
+\hspace{1cm}Eventuale îmbunătățiri: \\
+-Se va dezvolta un site web prin intermediul căruia clienții pot să se înregistreze și să răspundă la chestionare. Site-ul va fi găzduit prin intermediul unui server.\\
+-Creșterea securității și scalabilității sistemului.\\
+
+\section{Referințe Bibliografice}
+\hspace{1cm}Referințele pentru tehnologiile folosite:\\
+documentația limbajului C : \href{https://devdocs.io/c/}{C Documentation.com}
+\\
+biblioteca de rețea : \href{https://www.gnu.org/software/libc/manual/pdf/libc.pdf}{GNU Networking.com}
+\\
+alte surse : \href{https://profs.info.uaic.ro/~computernetworks/cursullaboratorul.php}{Computer Networks.com}
+\\
+\end{document}
+
+

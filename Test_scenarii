@@ -1,0 +1,7 @@
+
+Tratarea cazului de disconect al clientului de la server
+1) se inregistreaza [1-n] clienti si se deconecteaza inainte sa inceapa quizz
+2) se deconecteaza in timpul quizz ului [1-n]clienti
+3) se deconecteaza dupa ce a terminat si asteapta pe ceilalti
+4) se deconecteaza ultimul client care este asteptat de ceilalti clienti
+
