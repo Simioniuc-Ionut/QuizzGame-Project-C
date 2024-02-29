@@ -5,14 +5,14 @@ The purpose of the project is to implement a server that allows the connection o
 
   Project Objectives:
 
-Secure and efficient connection of n clients to the server.
+-Secure and efficient connection of n clients to the server.
 
-Creation of a concurrent multithreading server.
+-Creation of a concurrent multithreading server.
 
-Implementation of the question table using the SQLite database.
+-Implementation of the question table using the SQLite database.
 
-Sending a Leaderboard to the client including multiple details about each registered player.
+-Sending a Leaderboard to the client including multiple details about each registered player.
 
-Creation of a graphical timer in the client.
+-Creation of a graphical timer in the client.
 
-The server will be capable of running the Quiz session again.
+-The server will be capable of running the Quiz session again.
