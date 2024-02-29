@@ -4,7 +4,7 @@ The purpose of the project is to implement a server that allows the connection o
 
 Project Objectives:
 
-Secure and efficient connection of n clients to the server.
+Secure and efficient connection of n clients to the server.\n
 Creation of a concurrent multithreading server.
 Implementation of the question table using the SQLite database.
 Sending a Leaderboard to the client including multiple details about each registered player.
